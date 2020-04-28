@@ -1,0 +1,238 @@
+---
+- hosts: all
+  roles:
+    - configure-server
+    - django-application
+    - nginx
+    - postgres
+    - supervisor
+    - run-integration-tests
+    - wdio-tests
+  become: yes
+  vars:
+    project_name: genesishealth
+    username: "{{ app_username | default('genesishealth') }}"
+    virtualenv_base: /webapps
+    virtualenv_dir: "{{ virtualenv_base }}/{{ project_name }}"
+    secrets_path: /etc/secrets.json
+    src_base: "{{ virtualenv_dir }}/src/{{ project_name }}"
+    var_dir: "{{ virtualenv_dir }}/var"
+    log_dir: "{{ var_dir }}/log"
+    django_settings_module: "{{ project_name }}.conf.environments.{{ pronym_environment }}"
+    server_config:
+      apt_dependencies:
+        - ansible
+        - yarn
+      apt_repos:
+        - key_url: https://dl.yarnpkg.com/debian/pubkey.gpg
+          repo_url: deb https://dl.yarnpkg.com/debian/ stable main
+      git_email: "{{ git_email | default('') }}"
+      git_name: "{{ git_name | default('') }}"
+      user: "{{ username }}"
+      vagrant_user_password: $1$SomeSalt$GeiX8X5vXsCoyilpMJP3A1
+      virtualenv_base: "{{ virtualenv_base }}"
+      src_dir: "{{ src_base }}"
+      localhost_aliases:
+        - "{{ server_name }}"
+    django_app:
+      git_url: git@github.com:pronym-inc/genesishealth.git
+      git_branch: "{{ django_git_branch }}"
+      gunicorn_log_dir: "{{ log_dir }}/gunicorn"
+      gunicorn_socket_path: "{{ var_dir }}/run/{{ project_name }}_socket"
+      gunicorn_workers: "{{ gunicorn_workers | default(5) }}"
+      project_name: "{{ project_name }}"
+      settings_module: "{{ django_settings_module }}"
+      src_base: "{{ src_base }}"
+      static_base: "{{ var_dir }}/static"
+      user: "{{ username }}"
+      admin_username: "{{ django_admin_username | default('admin') }}"
+      admin_password: "{{ django_admin_password | default('password123') }}"
+      virtualenv_dir: "{{ virtualenv_dir }}"
+      do_webpack_packaging: false
+      extra_directories:
+        - repo
+    integration_tests:
+      enabled: "{{ integration_tests_enabled | default(False) }}"
+      command: "{{ virtualenv_dir }}/bin/pytest -c {{ src_base }}/{{ project_name }}/api_integration/conf/tox-prod.ini"
+      environment:
+        PYTHONPATH: "{{ src_base }}"
+    nginx:
+      copy_ssl_certs: "{{ copy_ssl_certs | default(False) }}"
+      create_self_signed_ssl: "{{ create_self_signed_ssl | default(False) }}"
+      log_dir: "{{ log_dir }}/nginx"
+      user: "{{ username }}"
+      sites:
+        - name: "{{ project_name }}"
+          server_name: "{{ server_name }}"
+          enable_ssl: "{{ include_ssl_certs | default(True) }}"
+          listen_port: "{{ listen_port }}"
+          proxy_url: "{{ nginx_proxy_url | default('http://unix:/webapps/genesishealth/var/run/genesishealth_socket') }}"
+          site_aliases: []
+          ssl_key_path: /etc/ssl/private/genesishealth.key
+          ssl_crt_path: /etc/ssl/certs/genesishealth.crt
+          static_paths:
+            - url: static
+              path: "{{ var_dir }}"
+            - url: packagedjs
+              path: "{{ var_dir }}" 
+    postgres:
+      secrets_key_prefix: db
+    supervisor:
+      conf_dir: "{{ virtualenv_dir }}/etc/supervisor"
+      environment: PYTHONPATH={{ src_base }},DJANGO_SETTINGS_MODULE={{ django_settings_module }},PRONYM_ENVIRONMENT={{ pronym_environment }}
+      log_dir: "{{ log_dir }}/supervisor"
+      run_dir: "{{ var_dir }}/run"
+      service_path: /etc/systemd/system
+      user: "{{ username }}"
+      processes:
+        - name: celery
+          command: "{{ virtualenv_dir }}/bin/celery -A {{ project_name }} worker -l info"
+        - name: celery_beat
+          command: "{{ virtualenv_dir }}/bin/celery -A {{ project_name }} beat --pidfile {{ var_dir }}/run/celerybeat.pid --schedule {{ var_dir }}/run/celerybeat.schedule"
+      vagrant_processes:
+        - name: runserver
+          command: "{{ virtualenv_dir }}/bin/python {{ virtualenv_dir }}/bin/manage.py runserver 0.0.0.0:8000"
+      nonvagrant_processes:
+        - name: gunicorn
+          command: "{{ virtualenv_dir }}/bin/gunicorn -c {{ virtualenv_dir }}/etc/gunicorn.conf.py {{ project_name }}.conf.wsgi.app"
+    wdio:
+        enabled: false
+        base_dir: "{{ src_base }}/{{ project_name }}/wdio/"
+  tasks:
+    - name: copy local secrets
+      copy:
+        src: secrets.json
+        dest: "{{ secrets_path }}"
+      tags:
+        - initial
+        - update
+    - include_vars:
+        file: secrets.json
+        name: secrets
+      tags:
+        - always
+    - name: vagrant system cleanup
+      include_role:
+        name: configure-server
+        tasks_from: initial_vagrant
+        apply:
+          tags:
+            - initial-vagrant
+      tags:
+        - initial-vagrant
+    - name: system setup
+      include_role:
+        name: configure-server
+        tasks_from: initial
+        apply:
+          tags:
+            - initial
+      tags:
+        - initial
+    - name: vagrant system setup
+      include_role:
+        name: configure-server
+        tasks_from: vagrant
+        apply:
+          tags:
+            - initial-vagrant
+      tags:
+        - initial-vagrant
+    - name: real system setup
+      include_role:
+        name: configure-server
+        tasks_from: real
+        apply:
+          tags:
+            - initial-non-vagrant
+      tags:
+        - initial-non-vagrant
+    - name: DB setup
+      include_role:
+        name: postgres
+        tasks_from: install
+        apply:
+          tags:
+            - initial
+      tags:
+        - initial
+    - include_role:
+        name: django-application
+        tasks_from: install
+        apply:
+          tags:
+            - initial
+      tags:
+        - initial
+    - include_role:
+        name: django-application
+        tasks_from: vagrant
+        apply:
+          tags:
+            - initial-vagrant
+      tags:
+        - initial-vagrant
+    - include_role:
+        name: supervisor
+        tasks_from: install
+        apply:
+          tags:
+            - initial
+      tags:
+        - initial
+    - include_role:
+        name: supervisor
+        tasks_from: vagrant
+        apply:
+          tags:
+            - initial-vagrant
+      tags:
+        - initial-vagrant
+    - include_role:
+        name: nginx
+        tasks_from: install
+        apply:
+          tags:
+            - initial
+      tags:
+        - initial
+    - include_role:
+        name: wdio-tests
+        tasks_from: install
+        apply:
+          tags:
+            - initial
+      tags:
+        - initial
+    - include_role:
+        name: django-application
+        tasks_from: update
+        apply:
+          tags:
+            - update
+      tags:
+        - update
+    - include_role:
+        name: supervisor
+        tasks_from: update
+        apply:
+          tags:
+            - update
+      tags:
+        - update
+    - include_role:
+        name: run-integration-tests
+        tasks_from: run
+        apply:
+          tags:
+            - update
+      tags:
+        - update
+    - include_role:
+        name: wdio-tests
+        tasks_from: run
+        apply:
+          tags:
+            - run-wdio
+      tags:
+        - run-wdio

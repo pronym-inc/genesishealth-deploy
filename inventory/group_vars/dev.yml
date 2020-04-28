@@ -1,0 +1,8 @@
+---
+server_name: dev-genesishealth.pronym.com
+listen_port: 443
+pronym_environment: dev
+include_ssl_certs: false
+copy_ssl_certs: true
+django_git_branch: develop
+integration_tests_enabled: false
