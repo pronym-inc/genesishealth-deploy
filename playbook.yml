@@ -194,8 +194,8 @@
         apply:
           tags:
             - initial-non-vagrant
-        tags:
-          - initial-non-vagrant
+      tags:
+        - initial-non-vagrant
     - include_role:
         name: nginx
         tasks_from: install
