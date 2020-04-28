@@ -1,5 +1,5 @@
 ---
-server_name: dev-genesishealth.pronym.com
+server_name: dev-aws-myghr.genesishealthtechnologies.com
 listen_port: 443
 pronym_environment: dev
 include_ssl_certs: false
