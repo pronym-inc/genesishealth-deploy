@@ -2,7 +2,7 @@
 server_name: aws-myghr.genesishealthtechnologies.com
 listen_port: 443
 pronym_environment: production
-include_ssl_certs: false
+include_ssl_certs: true
 copy_ssl_certs: true
 django_git_branch: master
 integration_tests_enabled: false
