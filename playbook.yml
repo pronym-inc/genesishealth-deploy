@@ -189,6 +189,14 @@
       tags:
         - initial-vagrant
     - include_role:
+        name: supervisor
+        tasks_from: nonvagrant
+        apply:
+          tags:
+            - initial-non-vagrant
+        tags:
+          - initial-non-vagrant
+    - include_role:
         name: nginx
         tasks_from: install
         apply:
