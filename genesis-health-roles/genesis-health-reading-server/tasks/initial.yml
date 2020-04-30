@@ -1,0 +1,8 @@
+---
+- include_role:
+    name: supervisor
+    tasks_from: add-conf
+  vars:
+    item:
+      process_name: reading_spy
+      command: "{{ virtualenv_dir }}/bin/python {{ virtualenv_dir }}/bin/manage.py reading_spy"

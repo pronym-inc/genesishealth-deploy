@@ -7,3 +7,4 @@ playbook.retry
 src/genesishealth
 lib/python3.6
 .idea/
+/lib/

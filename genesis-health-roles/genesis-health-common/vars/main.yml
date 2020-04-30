@@ -1,0 +1,6 @@
+---
+project_name: genesishealth
+django_app_extra_apt_dependencies:
+  - libcurl4-nss-dev
+django_app_git_url: git@github.com:pronym-inc/genesishealth.git
+django_static_enable_compressor: true
