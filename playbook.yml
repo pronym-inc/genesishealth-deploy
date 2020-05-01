@@ -15,6 +15,7 @@
     - genesis-health-reading-server
     - celery
     - celery-beat
+    - genesis-health-encrypt
     - nginx
 - hosts: web
   become: yes
@@ -27,6 +28,7 @@
     - django-application
     - django-static
     - django-gunicorn
+    - genesis-health-encrypt
     - nginx
 - hosts: worker-leader
   become: yes
@@ -37,6 +39,7 @@
     - configure-server
     - supervisor
     - django-application
+    - genesis-health-encrypt
     - celery
     - celery-beat
 - hosts: worker
@@ -48,6 +51,7 @@
     - configure-server
     - supervisor
     - django-application
+    - genesis-health-encrypt
     - celery
 - hosts: reading
   become: yes
@@ -58,4 +62,5 @@
     - configure-server
     - supervisor
     - django-application
+    - genesis-health-encrypt
     - genesis-health-reading-server

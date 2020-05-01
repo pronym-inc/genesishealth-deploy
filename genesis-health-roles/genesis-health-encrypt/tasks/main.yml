@@ -1,0 +1,10 @@
+---
+- name: genesis-health-encrypt initial
+  include_role:
+    name: genesis-health-encrypt
+    tasks_from: initial
+    apply:
+      tags:
+        - initial
+  tags:
+    - initial

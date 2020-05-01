@@ -1,0 +1,14 @@
+---
+- name: make and link encryption binaries
+  block:
+    - command: make encrypt
+      args:
+        chdir: "{{ genesis_health_encrypt_src_dir }}"
+    - command: make decrypt
+      args:
+        chdir: "{{ genesis_health_encrypt_src_dir }}"
+    - command: mv {{ genesis_health_encrypt_src_dir }}/encrypt {{ virtualenv_dir }}/bin
+    - command: mv {{ genesis_health_encrypt_src_dir }}/decrypt {{ virtualenv_dir }}/bin
+    - command: make clean
+      args:
+        chdir: "{{ genesis_health_encrypt_src_dir }}"

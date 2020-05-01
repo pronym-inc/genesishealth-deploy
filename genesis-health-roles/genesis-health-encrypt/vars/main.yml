@@ -1,0 +1,2 @@
+---
+genesis_health_encrypt_src_dir: "{{ src_base }}/extra/decrypt"
