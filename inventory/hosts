@@ -1,24 +1,24 @@
 [production]
-10.101.1.35
-10.101.1.246
-10.101.1.5
-10.101.1.130
-10.101.1.178
-10.101.1.147
-10.101.1.84
+reading1.ght-plumbing.in
+reading2.ght-plumbing.in
+reading3.ght-plumbing.in
+web.ght-plumbing.in
+worker1.ght-plumbing.in
+worker2.ght-plumbing.in
+worker3.ght-plumbing.in
 
 [dev]
 3.23.29.160
 
 [web]
-10.101.1.130
+web.ght-plumbing.in
 
 [worker]
-10.101.1.178
-10.101.1.147
-10.101.1.84
+worker1.ght-plumbing.in
+worker2.ght-plumbing.in
+worker3.ght-plumbing.in
 
 [reading]
-10.101.1.35
-10.101.1.246
-10.101.1.5
+reading1.ght-plumbing.in
+reading2.ght-plumbing.in
+reading3.ght-plumbing.in
