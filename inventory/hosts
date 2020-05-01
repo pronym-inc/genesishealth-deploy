@@ -13,8 +13,10 @@ worker3.ght-plumbing.in
 [web]
 web.ght-plumbing.in
 
-[worker]
+[worker-leader]
 worker1.ght-plumbing.in
+
+[worker]
 worker2.ght-plumbing.in
 worker3.ght-plumbing.in
 

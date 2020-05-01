@@ -14,6 +14,7 @@
     - django-runserver
     - genesis-health-reading-server
     - celery
+    - celery-beat
     - nginx
 - hosts: web
   become: yes
@@ -27,6 +28,17 @@
     - django-static
     - django-gunicorn
     - nginx
+- hosts: worker-leader
+  become: yes
+  roles:
+    - common-vars
+    - genesis-health-common
+    - secrets
+    - configure-server
+    - supervisor
+    - django-application
+    - celery
+    - celery-beat
 - hosts: worker
   become: yes
   roles:
