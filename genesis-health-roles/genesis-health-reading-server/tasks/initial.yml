@@ -1,4 +1,10 @@
 ---
+- name: Enable python binary to access port 443
+  become: true
+  capabilities:
+    path: /usr/bin/python3.6
+    capability: cap_net_bind_service+eip
+    state: present
 - include_role:
     name: supervisor
     tasks_from: add-conf
