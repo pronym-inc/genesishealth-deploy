@@ -1,2 +1,2 @@
---
+---
 reading_server_python_binary_path: "/usr/bin/python{{ django_app_python_version }}"

@@ -2,7 +2,7 @@
 - name: Enable python binary to access port 443
   become: true
   capabilities:
-    path: /usr/bin/python3.6
+    path: "{{ reading_server_python_binary_path }}"
     capability: cap_net_bind_service+eip
     state: present
 - include_role:
