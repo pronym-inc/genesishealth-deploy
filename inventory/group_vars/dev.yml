@@ -1,8 +1,8 @@
 ---
-server_name: dev-aws-myghr.genesishealthtechnologies.com
+server_name: dev-myghr.genesishealthtechnologies.com
 listen_port: 443
-pronym_environment: dev
+pronym_environment: development
 include_ssl_certs: true
 nginx_copy_ssl_certs: true
-django_git_branch: develop
+django_git_branch: master
 integration_tests_enabled: false

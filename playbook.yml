@@ -64,3 +64,20 @@
     - django-application
     - genesis-health-encrypt
     - genesis-health-reading-server
+- hosts: development
+  become: yes
+  roles:
+    - common-vars
+    - genesis-health-common
+    - secrets
+    - configure-server
+    - supervisor
+    - redis
+    - django-application
+    - django-static
+    - django-runserver
+    - genesis-health-reading-server
+    - celery
+    - celery-beat
+    - genesis-health-encrypt
+    - nginx
