@@ -7,9 +7,6 @@ worker1.ght-plumbing.in
 worker2.ght-plumbing.in
 worker3.ght-plumbing.in
 
-[dev]
-3.23.29.160
-
 [web]
 web.ght-plumbing.in
 
