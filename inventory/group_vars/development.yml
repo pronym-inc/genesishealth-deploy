@@ -1,7 +1,7 @@
 ---
 server_name: dev-myghr.genesishealthtechnologies.com
 listen_port: 443
-pronym_environment: development
+pronym_environment: dev
 include_ssl_certs: true
 nginx_copy_ssl_certs: true
 django_git_branch: master
