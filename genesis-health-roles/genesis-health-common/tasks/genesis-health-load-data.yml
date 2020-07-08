@@ -1,0 +1,15 @@
+---
+- name: Abort if not allowed.
+  fail:
+    msg: "genesis_health_common_allow_load_data must be true for this to work.  This will WIPE THE WHOLE DATABASE so make sure you want to do this."
+  when: not genesis_health_common_allow_load_data
+- name: Download file from S3
+  shell: aws s3 cp s3://genesishealth-db-data/{{ genesis_health_load_data_uuid }}.json /data/{{ genesis_health_load_data_uuid }}.json
+- name: Clear out the existing database
+  shell: "{{ virtualenv_dir }}/bin/python {{ virtualenv_dir }}/bin/manage.py flush --no-input"
+- name: Clear out the content types
+  shell: "{{ virtualenv_dir }}/bin/python {{ virtualenv_dir }}/bin/manage.py shell_plus -c \"ContentType.objects.all().delete()\""
+- name: Clear out the existing database
+  shell: "{{ virtualenv_dir }}/bin/python {{ virtualenv_dir }}/bin/manage.py loaddata /data/{{ genesis_health_load_data_uuid }}.json"
+- name: Load the data
+  shell: "{{ virtualenv_dir }}/bin/python {{ virtualenv_dir }}/bin/manage.py loaddata /data/{{ genesis_health_load_data_uuid }}.json"
