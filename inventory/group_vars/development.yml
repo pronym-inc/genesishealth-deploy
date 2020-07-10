@@ -7,3 +7,4 @@ nginx_copy_ssl_certs: true
 django_git_branch: master
 integration_tests_enabled: false
 postgres_allow_drop_database: true
+postgres_allow_restore_database: true
