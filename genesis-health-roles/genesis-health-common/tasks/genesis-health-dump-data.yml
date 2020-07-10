@@ -1,7 +1,0 @@
----
-- set_fact:
-    uuid: "{{ ansible_date_time.iso8601_micro | to_uuid }}"
-- name: Run the database dump
-  shell: "{{ virtualenv_dir }}/bin/python {{ virtualenv_dir }}/bin/manage.py dumpdata auth contenttypes sessions accounts alerts api contact dropdowns epc gdrives pharmacy health_information healthsplash heartbeat logs monitoring nursing orders products readings pronym_api > /data/{{ uuid }}.json"
-- name: Load it into S3
-  shell: aws s3 cp /data/{{ uuid }}.json s3://genesishealth-db-data/{{ uuid }}.json

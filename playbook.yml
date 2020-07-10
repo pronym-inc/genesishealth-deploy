@@ -30,6 +30,8 @@
     - django-gunicorn
     - genesis-health-encrypt
     - nginx
+    - aws-cli
+    - database-s3-dump
 - hosts: worker-leader
   become: yes
   roles:
@@ -81,3 +83,6 @@
     - celery-beat
     - genesis-health-encrypt
     - nginx
+    - aws-cli
+    - database-s3-dump
+    - database-s3-restore
