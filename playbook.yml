@@ -8,6 +8,7 @@
     - configure-server
     - supervisor
     - postgres
+    - postgres-server
     - redis
     - django-application
     - django-static
@@ -24,6 +25,7 @@
     - genesis-health-common
     - secrets
     - configure-server
+    - postgres
     - supervisor
     - django-application
     - django-static
@@ -73,6 +75,7 @@
     - genesis-health-common
     - secrets
     - configure-server
+    - postgres
     - supervisor
     - redis
     - django-application
