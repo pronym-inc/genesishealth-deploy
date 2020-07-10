@@ -6,4 +6,4 @@ include_ssl_certs: true
 nginx_copy_ssl_certs: true
 django_git_branch: master
 integration_tests_enabled: false
-genesis_health_common_allow_load_data: false
+postgres_allow_drop_database: true
